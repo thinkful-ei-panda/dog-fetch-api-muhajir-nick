@@ -3,7 +3,7 @@
 function watchForm() {
   $('form').submit((event) => {
     event.preventDefault();
-    const userInput = $("input[type=text]").val();
+    const userInput = $('input[type=text]').val();
     console.log(userInput);
     getDogImage(userInput);
   });
@@ -15,17 +15,25 @@ function getDogImage(breed) {
   fetch(`https://dog.ceo/api/breed/${breed}/images/random`)
 
     .then(response => response.json())
-    .then(responseJson =>
-      // console.log(responseJson));
+    .then(responseJson => {
+      console.log(responseJson);
       // generateRandomImages(responseJson));
-      generateRandomByBreed(responseJson))
-    .catch(error => alert('dog breed not found'));
+      displayImageResult(responseJson);
+    })
+    .catch(error => alert('fetch error'));
 }
 
 
-function generateRandomByBreed(responseJson) {
-  let imageUrl = responseJson.message;
-  let imageHtml = `<img src="${imageUrl}" alt="Random Dog Image">`;
+
+function displayImageResult(responseJson) {
+  let imageHtml = '';
+  if (responseJson.status === 'success') {
+    let imageUrl = responseJson.message;
+    imageHtml = `<img src="${imageUrl}" alt="Random Dog Image">`;
+  } else {
+    imageHtml = `<p>${responseJson.message}</p>`;
+  }
+
 
   $('.images').html(imageHtml);
 }
